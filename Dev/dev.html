@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notepad-Like Text Editor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            overflow-x: hidden;
+        }
+
+        .editor-container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background: #e1e1e1;
+            padding: 8px 15px;
+            border-bottom: 1px solid #ccc;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .editor-header button {
+            margin-right: 10px;
+            padding: 5px 15px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+            color: #333;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .editor-header button:hover {
+            background: #e6e6e6;
+        }
+
+        #file-menu {
+            position: absolute;
+            top: 40px;
+            left: 15px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 100;
+        }
+
+        #file-menu button {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            border: none;
+            background: #fff;
+            text-align: left;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        #file-menu button:hover {
+            background: #f0f0f0;
+        }
+
+        #text-editor {
+            flex-grow: 1;
+            width: 100%;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .modal button {
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            background: #4CAF50;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .modal button.cancel {
+            background: #f44336;
+        }
+
+        .modal button:hover {
+            background: #45a049;
+        }
+
+        .modal button.cancel:hover {
+            background: #e53935;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="editor-container">
+        <header class="editor-header">
+            <button onclick="toggleFileMenu()">File</button>
+            <div id="file-menu">
+                <button onclick="showClearModal()">Clear Content</button>
+                <button onclick="runCode()">Run</button>
+                <button onclick="downloadFile()">Download</button>
+                <button onclick="openFile()">Open</button>
+                <button onclick="shutdown()">Shutdown</button>
+                <button onclick="restart()">Restart</button>
+            </div>
+        </header>
+        <textarea id="text-editor" placeholder="Start typing HTML code here..."></textarea>
+    </div>
+
+    <!-- Modal for Clear Content -->
+    <div id="clearModal" class="modal">
+        <div class="modal-content">
+            <p>Are you sure you want to clear the content?</p>
+            <button onclick="clearContent()">Yes, Clear</button>
+            <button class="cancel" onclick="closeModal('clearModal')">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Modal for alerts -->
+    <div id="alertModal" class="modal">
+        <div class="modal-content">
+            <p id="alertMessage">This is an alert message.</p>
+            <button onclick="closeAlertModal()">OK</button>
+        </div>
+    </div>
+
+    <script>
+        const editor = document.getElementById('text-editor');
+        const fileMenu = document.getElementById('file-menu');
+
+        // Toggle file menu visibility
+        function toggleFileMenu() {
+            fileMenu.style.display = fileMenu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Hide file menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('.editor-header')) {
+                fileMenu.style.display = 'none';
+            }
+        });
+
+        // Show Clear Content Modal
+        function showClearModal() {
+            document.getElementById('clearModal').style.display = 'flex';
+        }
+
+        // Clear content of the editor
+        function clearContent() {
+            editor.value = '';
+            closeModal('clearModal');
+        }
+
+        // Close the modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Show custom alert modal
+        function showAlert(message) {
+            document.getElementById('alertMessage').textContent = message;
+            document.getElementById('alertModal').style.display = 'flex';
+        }
+
+        // Close alert modal
+        function closeAlertModal() {
+            document.getElementById('alertModal').style.display = 'none';
+        }
+
+        // Run code in a new window (simplified for this example)
+        function runCode() {
+            const htmlContent = editor.value;
+            const outputWindow = window.open();
+            outputWindow.document.open();
+            outputWindow.document.write(htmlContent);
+            outputWindow.document.close();
+        }
+
+        // Download the editor content as an HTML file
+        function downloadFile() {
+            const htmlContent = editor.value;
+            let fileName = prompt("Enter the name of the file (include .html):", "document.html");
+            if (!fileName || fileName.trim() === "") {
+                fileName = "document.html";
+            }
+            const blob = new Blob([htmlContent], { type: "text/html" });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = fileName;
+            a.click();
+        }
+
+        // Open an HTML file and load its content into the editor
+        function openFile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.html';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        editor.value = event.target.result;
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+// Shutdown function
+function shutdown() {
+    window.location.href = '../end/shut.html';
+}
+
+// Restart function
+function restart() {
+    window.location.href = '../end/rest.html';
+}
+    </script>
+</body>
+</html>

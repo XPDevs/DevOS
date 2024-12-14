@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image with Spinner</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #000; /* Black background */
+      font-family: Arial, sans-serif;
+      color: #fff; /* Ensure text is visible if needed */
+      overflow: hidden;
+    }
+    .container {
+      text-align: center;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+    .spinner {
+      margin: 20px auto;
+      width: 40px;
+      height: 40px;
+      border: 4px solid transparent;
+      border-top: 4px solid #ffffff; /* White spinner */
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    .message {
+      font-size: 36px;
+      color: #fff;
+      display: none; /* Initially hidden */
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="container">
+    <div class="spinner"></div>
+<p>Shutting down your computer.</p>
+  </div>
+
+  <script>
+    // After 10 seconds, clear the screen and display the message
+    setTimeout(() => {
+      // Clear the content of the container
+      document.getElementById("container").style.display = "none"; 
+
+      // Create the message element
+      const message = document.createElement("div");
+      message.className = "message";
+      message.innerText = "It is now ok to turn off your computer";
+      
+      // Append the message to the body
+      document.body.appendChild(message);
+      
+      // Show the message
+      message.style.display = "block";
+    }, 10000);
+  </script>
+</body>
+</html>
