@@ -106,8 +106,10 @@
             background-color: #fff;
             padding: 20px;
             border-radius: 5px;
-            width: 300px;
+            width: 90%;
+            max-width: 900px;
             text-align: center;
+            position: relative;
         }
 
         .modal button {
@@ -131,6 +133,13 @@
 
         .modal button.cancel:hover {
             background: #e53935;
+        }
+
+        /* Iframe styling */
+        #outputIframe {
+            width: 100%;
+            height: 400px;
+            border: none;
         }
 
     </style>
@@ -165,6 +174,14 @@
         <div class="modal-content">
             <p id="alertMessage">This is an alert message.</p>
             <button onclick="closeAlertModal()">OK</button>
+        </div>
+    </div>
+
+    <!-- Modal for code output -->
+    <div id="outputModal" class="modal">
+        <div class="modal-content">
+            <iframe id="outputIframe"></iframe>
+            <button onclick="closeOutputModal()">Close</button>
         </div>
     </div>
 
@@ -211,13 +228,14 @@
             document.getElementById('alertModal').style.display = 'none';
         }
 
-        // Run code in a new window (simplified for this example)
+        // Run code inside the modal
         function runCode() {
             const htmlContent = editor.value;
-            const outputWindow = window.open();
-            outputWindow.document.open();
-            outputWindow.document.write(htmlContent);
-            outputWindow.document.close();
+            const iframe = document.getElementById('outputIframe');
+            iframe.contentWindow.document.open();
+            iframe.contentWindow.document.write(htmlContent);
+            iframe.contentWindow.document.close();
+            document.getElementById('outputModal').style.display = 'flex';
         }
 
         // Download the editor content as an HTML file
@@ -252,15 +270,20 @@
             input.click();
         }
 
-// Shutdown function
-function shutdown() {
-    window.location.href = '../end/shut.html';
-}
+        // Shutdown function
+        function shutdown() {
+            window.location.href = '../end/shut.html';
+        }
 
-// Restart function
-function restart() {
-    window.location.href = '../end/rest.html';
-}
+        // Restart function
+        function restart() {
+            window.location.href = '../end/rest.html';
+        }
+
+        // Close the output modal
+        function closeOutputModal() {
+            document.getElementById('outputModal').style.display = 'none';
+        }
     </script>
 </body>
 </html>
