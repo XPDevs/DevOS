@@ -17,17 +17,27 @@
       position: relative;
     }
     p {
-      font-size: 8px; /* Small text */
+      font-size: 16px; /* Slightly larger text */
       position: absolute;
       bottom: 10px;
       color: #ccc; /* Light grey color for contrast */
     }
   </style>
   <script>
-    // Redirect to boot/boot.html after 15 seconds
-    setTimeout(function() {
-      window.location.href = "boot/boot.html";
-    }, 15000);
+    let countdown = 15; // Set initial countdown time
+
+    // Update the text every second
+    const countdownInterval = setInterval(function() {
+      // Update the text content with the current countdown
+      document.querySelector("p").textContent = `Redirecting in ${countdown} seconds...`;
+
+      countdown--;
+
+      if (countdown < 0) {
+        clearInterval(countdownInterval); // Stop the countdown when it's done
+        window.location.href = "boot/boot.html"; // Redirect after countdown ends
+      }
+    }, 1000);
   </script>
 </head>
 <body>
