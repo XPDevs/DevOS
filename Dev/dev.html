@@ -156,6 +156,8 @@
                 <button onclick="shutdown()">Shutdown</button>
                 <button onclick="restart()">Restart</button>
             </div>
+            <button onclick="goToTerminal()">Terminal</button>
+            <button onclick="goToAbout()">About</button>
         </header>
         <textarea id="text-editor" placeholder="Start typing HTML code here..."></textarea>
     </div>
@@ -283,6 +285,16 @@
         // Close the output modal
         function closeOutputModal() {
             document.getElementById('outputModal').style.display = 'none';
+        }
+
+        // Navigate to Terminal page
+        function goToTerminal() {
+            window.location.href = 'terminal.html'; // Replace with your terminal HTML page
+        }
+
+        // Navigate to About page
+        function goToAbout() {
+            window.location.href = 'about.html'; // Replace with your about HTML page
         }
     </script>
 </body>
