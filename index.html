@@ -16,12 +16,29 @@
       font-family: Arial, sans-serif;
       position: relative;
     }
+    p {
+      font-family: 'Courier New', Courier, monospace;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: none; /* Hide initially */
+    }
   </style>
   <script>
-    // Immediately redirect to boot/boot.html
-    window.location.href = "boot/boot.html";
+    // Show the message and play sound after 5 seconds
+    setTimeout(function() {
+      document.querySelector('p').style.display = 'block'; // Show the message
+      document.querySelector('audio').play(); // Play the sound
+    }, 5000);
+
+    // Redirect to boot/boot.html after 15 seconds (5 + 10)
+    setTimeout(function() {
+      window.location.href = "boot/boot.html";
+    }, 15000);
   </script>
 </head>
 <body>
+  <p>Checksum discrepancy resolved via fallback XOR masking (0x7EFA29C).</p>
+  <audio src="error/error.mp3" preload="auto"></audio> <!-- Replace with your actual MP3 file path -->
 </body>
 </html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Screen Custom Terminal</title>
+    <style>
+        /* Full screen styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            height: 100%;
+            background-color: black;
+            color: white;
+            font-family: Consolas, monospace;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            font-size: 20px;
+            overflow: hidden; /* Remove overall scrollbars */
+        }
+
+        #terminal {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 10px;
+            white-space: pre-wrap; /* Ensures input wraps */
+            overflow: hidden; /* Remove scrolling inside terminal */
+        }
+
+        .output {
+            color: #FFFFFF;
+            margin: 2px 0;
+        }
+
+        .command {
+            color: #00FF00;
+        }
+
+        /* Input styling */
+        input {
+            color: #00FF00;
+            background-color: black;
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 18px;
+            padding: 5px;
+        }
+
+        /* Make the input area look like the terminal prompt */
+        #inputArea {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        span {
+            color: white; /* White prompt '>' */
+        }
+
+        /* Make the terminal grow as needed */
+        #terminal {
+            display: block;
+            overflow-y: auto; /* Allow content to grow without showing scroll */
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="terminal">
+        <div class="output" id="output"></div>
+        <div id="inputArea">
+            <span>> </span><input type="text" id="commandInput" autofocus />
+        </div>
+    </div>
+
+    <script>
+        // Terminal output and input handling
+        const terminalOutput = document.getElementById('output');
+        const commandInput = document.getElementById('commandInput');
+
+        // Predefined commands
+        const commands = {
+            '/suicide-temp': () => {
+                window.location.href = '../end/rest.html'; // Temporary shutdown
+                return 'Exiting terminal...';
+            },
+            '/suicide-perm': () => {
+                window.location.href = '../end/shut.html'; // Permanent shutdown
+                return 'Exiting terminal...';
+            },
+            '/about-system': () => {
+                return `
+About DevOS
+Operating System: DevOS
+Version: 4.0.0
+Kernel: NexShell
+Build: 2024.12.15
+License: Open Source downloadable
+Developer: XPDevs
+                `;
+            },
+            '/help': () => {
+                return `
+Available Commands:
+- /suicide-temp - Exit to temporary shutdown
+- /suicide-perm - Exit to permanent shutdown
+- /about-system - Show system information
+- /clear - Clear the terminal screen
+- /date - Display the current date and time
+- /echo [text] - Echo back the provided text
+- /ls [directory] - List contents of a directory
+- /cat [file] - Show contents of a file
+- /shutdown - Simulate shutdown process
+- /reboot - Simulate reboot process
+- /build - Build the operating system (simulated)
+- /compile [file] - Compile a source file (simulated)
+- /run [program] - Run a program (simulated)
+- /start-boot - Simulate starting the boot process
+- /init-system - Run the system initialization (simulated)
+- /kernel-info - Show kernel info
+- /exit - Exit and navigate to dev.html
+                `;
+            },
+            '/clear': () => {
+                terminalOutput.innerHTML = '';  // Clears the terminal
+                return '';
+            },
+            '/date': () => {
+                return new Date().toString();
+            },
+            '/echo': (text) => {
+                return text ? text : 'Error: No text provided';
+            },
+            '/ls': (directory) => {
+                const fileStructure = {
+                    '/boot': ['init', 'bootloader', 'kernel.img'],
+                    '/dev': ['sda', 'tty1', 'null'],
+                    '/end': ['shut.html', 'rest.html'],
+                    '/kernel': ['nexshell.bin', 'kernel.config'],
+                };
+
+                return fileStructure[directory] ? fileStructure[directory].join('\n') : `Directory ${directory} not found.`;
+            },
+            '/cat': (fileName) => {
+                const fileContents = {
+                    'init': 'Boot initialization script...',
+                    'bootloader': 'Loading kernel...',
+                    'shut.html': 'Shutdown HTML content...',
+                    'rest.html': 'Temporary shutdown page...',
+                    'nexshell.bin': 'NexShell kernel binary...',
+                    'kernel.config': 'Kernel configuration...',
+                };
+
+                return fileContents[fileName] || `File ${fileName} not found.`;
+            },
+            '/shutdown': () => {
+                return 'Shutting down... (Simulated)';
+            },
+            '/reboot': () => {
+                return 'Rebooting system... (Simulated)';
+            },
+            '/build': () => {
+                return 'Building the operating system... (Simulated)';
+            },
+            '/compile': (fileName) => {
+                return `Compiling ${fileName}... (Simulated)`;
+            },
+            '/run': (program) => {
+                return `Running ${program}... (Simulated execution)`;
+            },
+            '/start-boot': () => {
+                return 'Starting the boot process... (Simulated)';
+            },
+            '/init-system': () => {
+                return 'Running system initialization... (Simulated)';
+            },
+            '/kernel-info': () => {
+                return `
+Kernel Info:
+Kernel Version: 4.0.0
+Kernel Name: NexShell
+Architecture: x86_64
+Boot Mode: UEFI
+                `;
+            },
+            '/exit': () => {
+                window.location.href = 'dev.html';  // Navigate to dev.html
+                return 'Exiting...';
+            }
+        };
+
+        // Process the input when user presses enter
+        commandInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const input = commandInput.value.trim();
+                commandInput.value = '';
+                processCommand(input);
+            }
+        });
+
+        // Process commands and show the output
+        function processCommand(input) {
+            let output;
+            const parts = input.split(' ');  // Split input into command and arguments
+            const command = parts[0];
+            const argument = parts.slice(1).join(' '); // Combine all arguments after the command
+
+            if (commands[command]) {
+                output = commands[command](argument);
+            } else {
+                output = `Command not found: ${input}`; // Add message for unrecognized commands
+            }
+            appendToTerminal(input, output);
+        }
+
+        // Append the user's input and the output to the terminal
+        function appendToTerminal(input, output) {
+            terminalOutput.innerHTML += `<div class="command">> ${input}</div>`;
+            terminalOutput.innerHTML += `<div class="output">${output}</div>`;
+        }
+
+    </script>
+
+</body>
+</html>

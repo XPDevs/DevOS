@@ -1,0 +1,34 @@
+// SERV.dll
+#include <windows.h>
+
+// Dummy functions
+extern "C" __declspec(dllexport) void InitializeService() {
+    // Initialization code
+}
+
+extern "C" __declspec(dllexport) int ExecuteTask(int param) {
+    return param * 2;
+}
+
+extern "C" __declspec(dllexport) void CleanupService() {
+    // Cleanup code
+}
+
+// DLL entry point
+extern "C" BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved) {
+    switch (ul_reason_for_call) {
+    case DLL_PROCESS_ATTACH:
+        // Initialization code
+        break;
+    case DLL_THREAD_ATTACH:
+        // Code for thread-specific initialization
+        break;
+    case DLL_THREAD_DETACH:
+        // Code for thread-specific cleanup
+        break;
+    case DLL_PROCESS_DETACH:
+        // Cleanup code
+        break;
+    }
+    return TRUE;
+}

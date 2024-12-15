@@ -1,0 +1,26 @@
+#include <iostream>
+#include <conio.h>  // For _getch() function on Windows
+
+void simulateKeypress() {
+    char key;
+    
+    std::cout << "Press any key to simulate a keyboard input (Press 'q' to quit):\n";
+    
+    while (true) {
+        key = _getch();  // Get a key press without echoing to the console
+        
+        if (key == 'q') {
+            std::cout << "Quitting...\n";
+            break;
+        }
+        
+        std::cout << "Key pressed: " << key << '\n';
+        
+        // You can add more sophisticated handling here
+    }
+}
+
+int main() {
+    simulateKeypress();
+    return 0;
+}
